@@ -162,15 +162,15 @@ class AzurHandle(BaseHandle[AzurChar]):
             return
         dom = etree.HTML(result, etree.HTMLParser())
         contents = dom.xpath(
-            "//div[@class='resp-tabs-container']/div[@class='resp-tab-content']"
+            "//div[@class='mw-parser-output']"
         )
         for index, content in enumerate(contents):
-            char_list = content.xpath("./table/tbody/tr[2]/td/div/div/div/div")
+            char_list = content.xpath("//div[@class='jntj-1 divsort']")
             for char in char_list:
                 try:
-                    name = char.xpath("./a/@title")[0]
+                    name = char.xpath("./div/a/@title")[0]
                     frame = char.xpath("./div/a/img/@alt")[0]
-                    avatar = char.xpath("./a/img/@srcset")[0]
+                    avatar = char.xpath("./div/a/img/@srcset")[0]
                 except IndexError:
                     continue
                 member_dict = {
@@ -191,7 +191,7 @@ class AzurHandle(BaseHandle[AzurChar]):
             try:
                 dom = etree.HTML(result, etree.HTMLParser())
                 time = dom.xpath(
-                    "//table[@class='wikitable sv-general']/tbody[1]/tr[4]/td[2]//text()"
+                    "//table[@class='wikitable sv-general']/tbody[1]/tr[6]/td[2]//text()"
                 )[0]
                 sources = []
                 if "无法建造" in time:
