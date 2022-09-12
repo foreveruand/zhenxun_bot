@@ -160,7 +160,7 @@ async def _(
 async def _(event: MessageEvent, reg_group: Tuple[Any, ...] = RegexGroup()):
     msg = reg_group[0]
     id_ = (
-        f"{event.user_id}:{event.group_id}"
+        f"{event.group_id}"
         if isinstance(event, GroupMessageEvent)
         else f"{event.user_id}"
     )
@@ -226,18 +226,18 @@ async def _():
     bot = get_bot()
     sub = None
     if bot:
-        try:
-            await sub_manager.reload_sub_data()
-            sub = await sub_manager.random_sub_data()
-            if sub:
-                logger.debug(f"Bilibili订阅开始检测：{sub.sub_id}")
-                rst = await get_sub_status(sub.sub_id, sub.sub_type)
+        # try:
+        await sub_manager.reload_sub_data()
+        sub = await sub_manager.random_sub_data()
+        if sub:
+            logger.debug(f"Bilibili订阅开始检测：{sub.sub_id}")
+            rst = await get_sub_status(sub.sub_id, sub.sub_type)
+            await send_sub_msg(rst, sub, bot)
+            if sub.sub_type == "live":
+                rst = await get_sub_status(sub.sub_id, "up")
                 await send_sub_msg(rst, sub, bot)
-                if sub.sub_type == "live":
-                    rst = await get_sub_status(sub.sub_id, "up")
-                    await send_sub_msg(rst, sub, bot)
-        except Exception as e:
-            logger.error(f"B站订阅推送发生错误 sub_id：{sub.sub_id if sub else 0} {type(e)}：{e}")
+        # except Exception as e:
+        #     logger.error(f"B站订阅推送发生错误 sub_id：{sub.sub_id if sub else 0} {type(e)}：{e}")
 
 
 async def send_sub_msg(rst: str, sub: BilibiliSub, bot: Bot):
